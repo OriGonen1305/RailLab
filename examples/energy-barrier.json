@@ -1,0 +1,15 @@
+{
+  "format": "raillab",
+  "version": 1,
+  "name": "Energy barrier",
+  "points": [[0,12],[20,2],[40,4],[65,30],[90,8]],
+  "settings": {
+    "initial_speed_m_s": 3,
+    "mass_kg": 300,
+    "gravity_m_s2": 9.80665,
+    "resistance_m_s2": 0.025,
+    "drag_area_m2": 0.35,
+    "air_density_kg_m3": 1.225,
+    "distance_step_m": 0.15
+  }
+}

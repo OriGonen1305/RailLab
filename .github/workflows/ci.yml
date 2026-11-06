@@ -1,0 +1,50 @@
+name: Build and test
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  core:
+    strategy:
+      matrix:
+        os: [ubuntu-24.04, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Configure portable core
+        run: cmake -S . -B build -DRAILLAB_BUILD_GUI=OFF -DCMAKE_BUILD_TYPE=Release
+      - name: Build
+        run: cmake --build build --config Release --parallel 4
+      - name: Test analytical cases
+        run: ctest --test-dir build -C Release --output-on-failure
+
+  desktop:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Install Qt development libraries
+        run: sudo apt-get update && sudo apt-get install -y qt6-base-dev libqt6svg6-dev
+      - name: Configure
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+      - name: Build
+        run: cmake --build build --parallel 4
+      - name: Test core and offscreen desktop workflows
+        run: ctest --test-dir build --output-on-failure
+
+  sanitizers:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - run: cmake -S . -B build -DRAILLAB_BUILD_GUI=OFF -DRAILLAB_SANITIZERS=ON -DCMAKE_BUILD_TYPE=Debug
+      - run: cmake --build build --parallel 4
+      - run: ctest --test-dir build --output-on-failure

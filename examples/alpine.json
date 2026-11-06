@@ -1,0 +1,15 @@
+{
+  "format": "raillab",
+  "version": 1,
+  "name": "Alpine descent",
+  "points": [[0,42],[18,26],[38,4],[58,3],[82,23],[104,8],[128,5],[150,13]],
+  "settings": {
+    "initial_speed_m_s": 4,
+    "mass_kg": 300,
+    "gravity_m_s2": 9.80665,
+    "resistance_m_s2": 0.025,
+    "drag_area_m2": 0.35,
+    "air_density_kg_m3": 1.225,
+    "distance_step_m": 0.15
+  }
+}

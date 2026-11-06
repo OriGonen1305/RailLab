@@ -1,0 +1,32 @@
+{
+  "format": "raillab",
+  "version": 2,
+  "name": "02-hill-step-0.01",
+  "points": [
+    [
+      0,
+      0
+    ],
+    [
+      1,
+      1
+    ],
+    [
+      2,
+      0
+    ]
+  ],
+  "segment_forces_N": [
+    0,
+    0
+  ],
+  "settings": {
+    "initial_speed_m_s": 5.09,
+    "mass_kg": 100,
+    "gravity_m_s2": 10,
+    "resistance_m_s2": 2,
+    "drag_area_m2": 0,
+    "air_density_kg_m3": 1,
+    "distance_step_m": 0.01
+  }
+}

@@ -1,0 +1,15 @@
+/build*/
+/.cache/
+/.DS_Store
+*.user
+*.dSYM/
+/exports/
+
+# Local configuration and private review material
+.DS_Store
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.portfolio-review/

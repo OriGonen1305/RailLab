@@ -1,0 +1,15 @@
+{
+  "format": "raillab",
+  "version": 1,
+  "name": "Vertical loop",
+  "points": [[-45,48],[-23,18],[0,0],[12,12],[0,24],[-12,12],[0,0],[25,0],[48,9]],
+  "settings": {
+    "initial_speed_m_s": 5,
+    "mass_kg": 300,
+    "gravity_m_s2": 9.80665,
+    "resistance_m_s2": 0.025,
+    "drag_area_m2": 0.35,
+    "air_density_kg_m3": 1.225,
+    "distance_step_m": 0.15
+  }
+}

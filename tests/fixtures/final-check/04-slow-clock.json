@@ -1,0 +1,27 @@
+{
+  "format": "raillab",
+  "version": 2,
+  "name": "04-slow-clock",
+  "points": [
+    [
+      0,
+      0
+    ],
+    [
+      10,
+      0
+    ]
+  ],
+  "segment_forces_N": [
+    0
+  ],
+  "settings": {
+    "initial_speed_m_s": 1e-13,
+    "mass_kg": 100,
+    "gravity_m_s2": 10,
+    "resistance_m_s2": 0,
+    "drag_area_m2": 0,
+    "air_density_kg_m3": 1,
+    "distance_step_m": 0.15
+  }
+}

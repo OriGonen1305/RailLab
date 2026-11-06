@@ -1,0 +1,62 @@
+cmake_minimum_required(VERSION 3.21)
+project(RailLab VERSION 1.0.0 LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+option(RAILLAB_BUILD_GUI "Build the Qt desktop application" ON)
+option(RAILLAB_SANITIZERS "Enable address and undefined-behavior sanitizers" OFF)
+include(CTest)
+
+add_library(rail_core src/core/track.cpp src/core/analysis.cpp src/core/export.cpp)
+target_include_directories(rail_core PUBLIC include)
+if(MSVC)
+  target_compile_options(rail_core PRIVATE /W4)
+else()
+  target_compile_options(rail_core PRIVATE -Wall -Wextra -Wpedantic -Wconversion)
+  if(RAILLAB_SANITIZERS)
+    target_compile_options(rail_core PUBLIC -fsanitize=address,undefined -fno-omit-frame-pointer)
+    target_link_options(rail_core PUBLIC -fsanitize=address,undefined)
+  endif()
+endif()
+
+add_executable(rail_analyze src/cli.cpp)
+target_link_libraries(rail_analyze PRIVATE rail_core)
+
+if(BUILD_TESTING)
+  add_executable(core_tests tests/core_tests.cpp)
+  target_link_libraries(core_tests PRIVATE rail_core)
+  add_test(NAME core_tests COMMAND core_tests)
+  add_test(NAME cli_tests COMMAND ${CMAKE_COMMAND}
+    "-DCLI=$<TARGET_FILE:rail_analyze>"
+    "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/cli-test"
+    -P "${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_tests.cmake")
+endif()
+
+if(RAILLAB_BUILD_GUI)
+  find_package(Qt6 6.4 REQUIRED COMPONENTS Widgets Svg)
+  set(CMAKE_AUTOMOC ON)
+  add_library(rail_ui src/app/plot.cpp src/app/track_view.cpp src/app/project.cpp src/app/window.cpp)
+  target_include_directories(rail_ui PUBLIC src/app)
+  target_link_libraries(rail_ui PUBLIC rail_core Qt6::Widgets Qt6::Svg)
+  if(NOT MSVC)
+    target_compile_options(rail_ui PRIVATE -Wall -Wextra -Wpedantic)
+  endif()
+  add_executable(RailLab MACOSX_BUNDLE WIN32 src/app/main.cpp)
+  target_link_libraries(RailLab PRIVATE rail_ui)
+  set_target_properties(RailLab PROPERTIES
+    MACOSX_BUNDLE_GUI_IDENTIFIER "org.raillab.desktop"
+    MACOSX_BUNDLE_BUNDLE_NAME "RailLab"
+    MACOSX_BUNDLE_SHORT_VERSION_STRING "${PROJECT_VERSION}")
+  if(BUILD_TESTING)
+    find_package(Qt6 REQUIRED COMPONENTS Test)
+    add_executable(ui_tests tests/ui_tests.cpp)
+    target_link_libraries(ui_tests PRIVATE rail_ui Qt6::Test)
+    add_test(NAME ui_tests COMMAND ui_tests)
+    set_tests_properties(ui_tests PROPERTIES ENVIRONMENT "QT_QPA_PLATFORM=offscreen")
+    add_executable(review_tests tests/review_tests.cpp)
+    target_link_libraries(review_tests PRIVATE rail_ui)
+    add_test(NAME review_tests COMMAND review_tests "${CMAKE_CURRENT_SOURCE_DIR}/tests/fixtures/final-check")
+    set_tests_properties(review_tests PROPERTIES ENVIRONMENT "QT_QPA_PLATFORM=offscreen")
+  endif()
+endif()
